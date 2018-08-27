@@ -5,8 +5,6 @@ const merge = require('webpack-merge')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const baseWebpackConfig = require('./webpack.base.conf')
 const portfinder = require('portfinder')
-// const InterpolateHtmlPlugin = require('interpolate-html-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let port;
 portfinder.basePort = 8080;
@@ -38,22 +36,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
     // Add FriendlyErrorsPlugin
     new FriendlyErrorsPlugin(),
-
-    // Makes some environment variables available in index.html.
-    // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
-    // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    // In development, this will be an empty string.
-    // new InterpolateHtmlPlugin({
-    //   NODE_ENV: 'development',
-    //   PUBLIC_URL: '/'
-    // }),
-
-    // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: path.resolve('src/index.html'),
-    }),
-
+    
     new webpack.HotModuleReplacementPlugin()
   ],
 

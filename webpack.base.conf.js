@@ -3,6 +3,7 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -54,75 +55,63 @@ module.exports = {
         // },
       },
 
-      {
-        test: /\.(sa|sc|c)ss$/,
-        include: [path.resolve('src')],
-        exclude: path.resolve('node_modules'),
-        use: [
-          // 'style-loader', // creates style nodes from JS strings
-          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-          'css-loader', // translates CSS into CommonJS
-          'postcss-loader',
-          'sass-loader' // compiles Sass to CSS, using Node Sass by default
-        ]
-      },
-
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
-      // {
-      //   test: /\.(sa|sc|c)ss$/,
-      //   include: [path.resolve('src')],
-      //   exclude: path.resolve('node_modules'),
-      //   use: [
-      //     isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-      //     {
-      //       loader: 'css-loader',
-      //       options: {
-      //         importLoaders: 1,
-      //         sourceMap: true,
-      //         minimize: isProduction
-      //       },
-      //     },
-      //     {
-      //       loader: 'postcss-loader',
-      //       options: {
-      //         // Necessary for external CSS imports to work
-      //         // https://github.com/facebookincubator/create-react-app/issues/2677
-      //         ident: 'postcss',
-      //         sourceMap: true,
-      //         minimize: isProduction,
-      //         plugins: (loader) => [
-      //           require('postcss-import'),
-      //           require('autoprefixer'),
-      //           require('postcss-flexbugs-fixes')
-      //         ],
-      //         // plugins: () => [
-      //         //   require('postcss-flexbugs-fixes'),
-      //         //   autoprefixer({
-      //         //     browsers: [
-      //         //       '>1%',
-      //         //       'last 4 versions',
-      //         //       'Firefox ESR',
-      //         //       'not ie < 9', // React doesn't support IE8 anyway
-      //         //     ],
-      //         //     flexbox: 'no-2009',
-      //         //   }),
-      //         // ],
-      //       },
-      //     },
-      //     {
-      //       loader: 'sass-loader',
-      //       options: {
-      //         indentedSyntax: true,
-      //         sourceMap: true,
-      //         minimize: isProduction
-      //       }
-      //     }
-      //   ],
-      // },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        include: [path.resolve('src')],
+        exclude: path.resolve('node_modules'),
+        use: [
+          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              sourceMap: true,
+              minimize: isProduction
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              // Necessary for external CSS imports to work
+              // https://github.com/facebookincubator/create-react-app/issues/2677
+              ident: 'postcss',
+              sourceMap: true,
+              minimize: isProduction,
+              plugins: (loader) => [
+                require('postcss-import'),
+                require('postcss-url'),
+                require('autoprefixer'),
+                require('postcss-flexbugs-fixes')
+              ],
+              // plugins: () => [
+              //   require('postcss-flexbugs-fixes'),
+              //   autoprefixer({
+              //     browsers: [
+              //       '>1%',
+              //       'last 4 versions',
+              //       'Firefox ESR',
+              //       'not ie < 9', // React doesn't support IE8 anyway
+              //     ],
+              //     flexbox: 'no-2009',
+              //   }),
+              // ],
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              indentedSyntax: false,
+              sourceMap: true,
+              minimize: isProduction
+            }
+          }
+        ]
+      },
 
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -204,6 +193,12 @@ module.exports = {
         root: path.resolve(__dirname)
       }
     ),
+
+    // Generates an `index.html` file with the <script> injected.
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve('src/index.html'),
+    }),
 
     new MiniCssExtractPlugin({
       filename: '[name].css',
