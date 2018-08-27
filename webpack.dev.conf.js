@@ -8,16 +8,16 @@ const portfinder = require('portfinder')
 // const InterpolateHtmlPlugin = require('interpolate-html-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+let port;
 portfinder.basePort = 8080;
-const port = portfinder.getPortPromise();
+portfinder.getPortPromise().then((p) => {
+  port = p;
+  console.log(`Listening on port ${p}`);
+});
 
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
-
-  // module: {
-  //   rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
-  // },
 
   // cheap-module-eval-source-map is faster for development
   devtool: 'cheap-module-eval-source-map',
@@ -56,6 +56,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
     new webpack.HotModuleReplacementPlugin()
   ],
+
+  watch: true,
+  watchOptions: {
+    ignored: /node_modules/
+  },
 
   devServer: {
     open: true,

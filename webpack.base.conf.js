@@ -54,114 +54,148 @@ module.exports = {
         // },
       },
 
+      {
+        test: /\.(sa|sc|c)ss$/,
+        include: [path.resolve('src')],
+        exclude: path.resolve('node_modules'),
+        use: [
+          // 'style-loader', // creates style nodes from JS strings
+          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader', // translates CSS into CommonJS
+          'postcss-loader',
+          'sass-loader' // compiles Sass to CSS, using Node Sass by default
+        ]
+      },
+
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [
-          isProduction ? MiniCssExtractPlugin.loader : require.resolve('style-loader'),
-          {
-            loader: require.resolve('css-loader'),
-            options: {
-              importLoaders: 1,
-              sourceMap: true
-            },
-          },
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              // Necessary for external CSS imports to work
-              // https://github.com/facebookincubator/create-react-app/issues/2677
-              ident: 'postcss',
-              sourceMap: true
-              // plugins: () => [
-              //   require('postcss-flexbugs-fixes'),
-              //   // autoprefixer({
-              //   //   browsers: [
-              //   //     '>1%',
-              //   //     'last 4 versions',
-              //   //     'Firefox ESR',
-              //   //     'not ie < 9', // React doesn't support IE8 anyway
-              //   //   ],
-              //   //   flexbox: 'no-2009',
-              //   // }),
-              // ],
-            },
-          },
-          {
-            loader: require('sass-loader'),
-            options: {
-              indentedSyntax: true,
-              sourceMap: true
-            }
-          }
-        ],
-      },
+      // {
+      //   test: /\.(sa|sc|c)ss$/,
+      //   include: [path.resolve('src')],
+      //   exclude: path.resolve('node_modules'),
+      //   use: [
+      //     isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+      //     {
+      //       loader: 'css-loader',
+      //       options: {
+      //         importLoaders: 1,
+      //         sourceMap: true,
+      //         minimize: isProduction
+      //       },
+      //     },
+      //     {
+      //       loader: 'postcss-loader',
+      //       options: {
+      //         // Necessary for external CSS imports to work
+      //         // https://github.com/facebookincubator/create-react-app/issues/2677
+      //         ident: 'postcss',
+      //         sourceMap: true,
+      //         minimize: isProduction,
+      //         plugins: (loader) => [
+      //           require('postcss-import'),
+      //           require('autoprefixer'),
+      //           require('postcss-flexbugs-fixes')
+      //         ],
+      //         // plugins: () => [
+      //         //   require('postcss-flexbugs-fixes'),
+      //         //   autoprefixer({
+      //         //     browsers: [
+      //         //       '>1%',
+      //         //       'last 4 versions',
+      //         //       'Firefox ESR',
+      //         //       'not ie < 9', // React doesn't support IE8 anyway
+      //         //     ],
+      //         //     flexbox: 'no-2009',
+      //         //   }),
+      //         // ],
+      //       },
+      //     },
+      //     {
+      //       loader: 'sass-loader',
+      //       options: {
+      //         indentedSyntax: true,
+      //         sourceMap: true,
+      //         minimize: isProduction
+      //       }
+      //     }
+      //   ],
+      // },
 
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: path.posix.join('assets', 'img/[name].[hash:7].[ext]')
-        }
-      },
+        loader:
+          'url-loader',
+        options:
+          {
+            limit: 10000,
+            name:
+              path.posix.join('assets', 'img/[name].[hash:7].[ext]')
+          }
+      }
+      ,
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: path.posix.join('assets', 'video/[name].[hash:7].[ext]')
-        }
-      },
+        loader:
+          'url-loader',
+        options:
+          {
+            limit: 10000,
+            name:
+              path.posix.join('assets', 'video/[name].[hash:7].[ext]')
+          }
+      }
+      ,
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: path.posix.join('assets', 'fonts/[name].[hash:7].[ext]')
-        }
+        loader:
+          'url-loader',
+        options:
+          {
+            limit: 10000,
+            name:
+              path.posix.join('assets', 'fonts/[name].[hash:7].[ext]')
+          }
       }
     ]
   },
 
-  // optimization: {
-  //   runtimeChunk: false,
-  //
-  //   splitChunks: {
-  //     cacheGroups: {
-  //       commons: {
-  //         // test: /[\\/]node_modules[\\/](?!@pollyjs)/,
-  //         /**
-  //          * Create the vendor chunk with all the modules from node_modules, except for PollyJS that
-  //          * will be included in the mock chunk. This will prevent that PollyJS is included in the vendor causing errors
-  //          * on IE since it not supported on it yet.
-  //          * See https://github.com/Netflix/pollyjs/issues/28
-  //          *
-  //          * @param module
-  //          * @param chunks
-  //          * @returns {boolean}
-  //          */
-  //         test: (module, chunks) => {
-  //           // console.log(module.context);
-  //
-  //           if (module.context.indexOf('node_modules') > -1 && module.context.indexOf('@pollyjs') === -1) {
-  //             return true;
-  //           }
-  //
-  //           return false;
-  //         },
-  //         chunks: 'initial',
-  //         name: 'vendor',
-  //         priority: 10,
-  //         enforce: true
-  //       }
-  //     }
-  //   }
-  // },
+// optimization: {
+//   runtimeChunk: false,
+//
+//   splitChunks: {
+//     cacheGroups: {
+//       commons: {
+//         // test: /[\\/]node_modules[\\/](?!@pollyjs)/,
+//         /**
+//          * Create the vendor chunk with all the modules from node_modules, except for PollyJS that
+//          * will be included in the mock chunk. This will prevent that PollyJS is included in the vendor causing errors
+//          * on IE since it not supported on it yet.
+//          * See https://github.com/Netflix/pollyjs/issues/28
+//          *
+//          * @param module
+//          * @param chunks
+//          * @returns {boolean}
+//          */
+//         test: (module, chunks) => {
+//           // console.log(module.context);
+//
+//           if (module.context.indexOf('node_modules') > -1 && module.context.indexOf('@pollyjs') === -1) {
+//             return true;
+//           }
+//
+//           return false;
+//         },
+//         chunks: 'initial',
+//         name: 'vendor',
+//         priority: 10,
+//         enforce: true
+//       }
+//     }
+//   }
+// },
 
   plugins: [
     new CleanWebpackPlugin(
@@ -177,16 +211,22 @@ module.exports = {
     })
   ],
 
-  node: {
-    // prevent webpack from injecting useless setImmediate polyfill because Vue
-    // source contains it (although only uses it if it's native).
-    setImmediate: false,
-    // prevent webpack from injecting mocks to Node native modules
-    // that does not make sense for the client
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  }
+  node:
+    {
+      // prevent webpack from injecting useless setImmediate polyfill because Vue
+      // source contains it (although only uses it if it's native).
+      setImmediate: false,
+      // prevent webpack from injecting mocks to Node native modules
+      // that does not make sense for the client
+      dgram:
+        'empty',
+      fs:
+        'empty',
+      net:
+        'empty',
+      tls:
+        'empty',
+      child_process:
+        'empty'
+    }
 }

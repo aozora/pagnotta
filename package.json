@@ -5,7 +5,7 @@
   "author": "Marcello Palmitessa <marcello.palmitessa@avanade.com>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open -w --config webpack.dev.conf.js"
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open 'firefox' --config webpack.dev.conf.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0"
