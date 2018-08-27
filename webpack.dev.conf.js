@@ -5,7 +5,7 @@ const merge = require('webpack-merge')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const baseWebpackConfig = require('./webpack.base.conf')
 const portfinder = require('portfinder')
-const InterpolateHtmlPlugin = require('interpolate-html-plugin');
+// const InterpolateHtmlPlugin = require('interpolate-html-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 portfinder.basePort = 8080;
@@ -58,16 +58,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   ],
 
   devServer: {
+    open: true,
     https: false,
     port: port,
-    /*
-      open: process.platform === 'darwin',
-      host: '0.0.0.0',
-      https: false,
-      hotOnly: false,
-      proxy: null, // string | Object
-      before: app => {}
-    */
     clientLogLevel: 'none',
     historyApiFallback: {
       disableDotRule: true,
@@ -75,7 +68,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         { from: /./, to: '/index.html' }
       ]
     },
-    contentBase: path.resolve('public'),
+    contentBase: path.resolve('dist'),
     watchContentBase: true,
     hot: true,
     quiet: true,

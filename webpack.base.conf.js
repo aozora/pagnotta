@@ -1,7 +1,10 @@
 'use strict'
-const path = require('path')
-// const utils = require('./utils')
-// const config = require('../config')
+
+const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -57,13 +60,14 @@ module.exports = {
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
       {
-        test: /\.css$/,
+        test: /\.(sa|sc|c)ss$/,
         use: [
-          require.resolve('style-loader'),
+          isProduction ? MiniCssExtractPlugin.loader : require.resolve('style-loader'),
           {
             loader: require.resolve('css-loader'),
             options: {
               importLoaders: 1,
+              sourceMap: true
             },
           },
           {
@@ -72,6 +76,7 @@ module.exports = {
               // Necessary for external CSS imports to work
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
+              sourceMap: true
               // plugins: () => [
               //   require('postcss-flexbugs-fixes'),
               //   // autoprefixer({
@@ -86,9 +91,15 @@ module.exports = {
               // ],
             },
           },
+          {
+            loader: require('sass-loader'),
+            options: {
+              indentedSyntax: true,
+              sourceMap: true
+            }
+          }
         ],
       },
-
 
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -151,6 +162,20 @@ module.exports = {
   //     }
   //   }
   // },
+
+  plugins: [
+    new CleanWebpackPlugin(
+      [path.resolve(__dirname, 'dist')],
+      {
+        root: path.resolve(__dirname)
+      }
+    ),
+
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    })
+  ],
 
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
