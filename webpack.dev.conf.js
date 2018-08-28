@@ -2,11 +2,11 @@
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const baseWebpackConfig = require('./webpack.base.conf')
 const portfinder = require('portfinder')
 
-let port;
+let port = 8080;
 portfinder.basePort = 8080;
 portfinder.getPortPromise().then((p) => {
   port = p;
@@ -35,8 +35,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     ),
 
     // Add FriendlyErrorsPlugin
-    new FriendlyErrorsPlugin(),
-    
+    new FriendlyErrorsWebpackPlugin(
+      {
+        compilationSuccessInfo: {
+          messages: ['Compilation successful'],
+          // notes: ['Some additionnal notes to be displayed unpon successful compilation']
+        },
+
+        additionalTransformers: [],
+        additionalFormatters: []
+      }
+    ),
+
+
     new webpack.HotModuleReplacementPlugin()
   ],
 

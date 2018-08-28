@@ -4,6 +4,8 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -45,14 +47,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src/js') /* , resolve('node_modules/webpack-dev-server/client') */],
-        // options: {
-        //   presets: [
-        //     ['env', {
-        //       // modules: false,
-        //       useBuiltIns: 'usage',
-        //     }],
-        //   ],
-        // },
       },
 
       // "postcss" loader applies autoprefixer to our CSS.
@@ -88,18 +82,6 @@ module.exports = {
                 require('autoprefixer'),
                 require('postcss-flexbugs-fixes')
               ],
-              // plugins: () => [
-              //   require('postcss-flexbugs-fixes'),
-              //   autoprefixer({
-              //     browsers: [
-              //       '>1%',
-              //       'last 4 versions',
-              //       'Firefox ESR',
-              //       'not ie < 9', // React doesn't support IE8 anyway
-              //     ],
-              //     flexbox: 'no-2009',
-              //   }),
-              // ],
             },
           },
           {
@@ -194,11 +176,33 @@ module.exports = {
       }
     ),
 
+    new CaseSensitivePathsPlugin(),
+
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve('src/index.html'),
     }),
+
+    /* config.plugin('preload') */
+    new PreloadWebpackPlugin(
+      {
+        rel: 'preload',
+        include: 'initial',
+        fileBlacklist: [
+          /\.map$/,
+          /hot-update\.js$/
+        ]
+      }
+    ),
+
+    /* config.plugin('prefetch') */
+    new PreloadWebpackPlugin(
+      {
+        rel: 'prefetch',
+        include: 'asyncChunks'
+      }
+    ),
 
     new MiniCssExtractPlugin({
       filename: '[name].css',
@@ -206,22 +210,21 @@ module.exports = {
     })
   ],
 
-  node:
-    {
-      // prevent webpack from injecting useless setImmediate polyfill because Vue
-      // source contains it (although only uses it if it's native).
-      setImmediate: false,
-      // prevent webpack from injecting mocks to Node native modules
-      // that does not make sense for the client
-      dgram:
-        'empty',
-      fs:
-        'empty',
-      net:
-        'empty',
-      tls:
-        'empty',
-      child_process:
-        'empty'
-    }
-}
+  node: {
+    // prevent webpack from injecting useless setImmediate polyfill because Vue
+    // source contains it (although only uses it if it's native).
+    setImmediate: false,
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    dgram:
+      'empty',
+    fs:
+      'empty',
+    net:
+      'empty',
+    tls:
+      'empty',
+    child_process:
+      'empty'
+  }
+};
