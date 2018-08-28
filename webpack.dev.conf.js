@@ -58,7 +58,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   devServer: {
     open: true,
-    https: false,
+    https: true,
     port: port,
     clientLogLevel: 'none',
     historyApiFallback: {
