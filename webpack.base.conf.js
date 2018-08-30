@@ -1,5 +1,6 @@
 'use strict'
 
+const fs = require('fs');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,6 +9,14 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
+
+
+// get a list of all the html pages
+const pages = fs
+  .readdirSync(path.resolve(__dirname, 'src'))
+  .filter(fileName => fileName.endsWith('.html'));
+
+console.log({ pages });
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -179,10 +188,21 @@ module.exports = {
     new CaseSensitivePathsPlugin(),
 
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: path.resolve('src/index.html'),
-    }),
+    // new HtmlWebpackPlugin({
+    //   inject: true,
+    //   template: path.resolve('src/index.html'),
+    // }),
+
+    // inject scripts/styles in every every HTML page
+    ...pages.map(page =>
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: path.resolve(`src/${page}`),
+        filename: page,
+        // templateParameters: require('./src/data/bundle.json')
+      })
+    ),
+
 
     /* config.plugin('preload') */
     new PreloadWebpackPlugin(

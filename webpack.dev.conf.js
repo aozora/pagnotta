@@ -6,6 +6,7 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const baseWebpackConfig = require('./webpack.base.conf')
 const portfinder = require('portfinder')
 
+// dynamically get a port
 let port = 8080;
 portfinder.basePort = 8080;
 portfinder.getPortPromise().then((p) => {
