@@ -68,7 +68,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         { from: /./, to: '/index.html' }
       ]
     },
-    contentBase: path.resolve('dist'),
+    contentBase: path.resolve('static'),
     watchContentBase: true,
     hot: true,
     quiet: true,
